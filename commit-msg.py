@@ -47,24 +47,25 @@ if not branchName == 'master':
 
 nameErrorMsg = "Github usernames may not contain spaces.\n"
 typeErrorMsg = ("Incorrect format for commit type.\n" +
-  "You can avoid such messages in the future by following this format in your messages: 'COMMIT_TYPE: COMMIT_BODY; PAIR_PROGRAMMING [yes/no]'\n" + 
+  "You can avoid such messages in the future by following this format in your messages: 'COMMIT_TYPE: COMMIT_SUBJECT" +
   "Choose from the following:\n" +
   str(allowedType) + "\nPlease enter a new commit type, or enter 'help' for details on what each type means: ")
-bodyErrorMsg = "Incorrect format for commit body.\nPlease enter message body:\n"
-isPPMsg = "Were you pair programming? "
-driverMsg = "Enter the Github username of the driver: "
-observerMsg = "Enter the Github username of the observer: "
+subjectErrorMsg = "Incorrect format for commit subject.\nPlease enter message subject:"
+isPPMsg = "Were you pair programming? [y/n]: "
+driverMsg = "Enter the Github email ID of the driver: "
+observerMsg = "Enter the Github email ID of the observer: "
 
 with open(commitFile) as f:
   flag = False
-  commitMsg = ""
+  commitSubjectMsg = f.readline()
+  commitBodyMsg = ""
   for line in f.readlines():
     if not re.match("#.*", line):
-      commitMsg += line
+      commitBodyMsg += line
 
-  commitMsgSplit = commitMsg.split(':')
+  commitMsgSplit = commitSubjectMsg.split(':')
   try:
-    msgType, msgBody = commitMsgSplit[:2]
+    msgType, msgSubject = commitMsgSplit[:2]
   except ValueError as e:
     flag = True
     msgType = input(typeErrorMsg)
@@ -79,14 +80,10 @@ with open(commitFile) as f:
     typeMatch = any([re.match(".*" + word.lower() + ".*", msgType.lower().lstrip()) for word in allowedType])
 
   if flag:
-    msgBody = input(bodyErrorMsg).lstrip()
-    commitMsgSplit = [msgType, msgBody]
-  else:
-    commitMsgSplit = [msgType] + commitMsgSplit[1].split(";")
-    msgBody = commitMsgSplit[1].lstrip()
+    msgSubject = input(subjectErrorMsg).lstrip()
+    commitMsgSplit = [msgType, msgSubject]
 
-  if len(commitMsgSplit) < 3:
-    commitMsgSplit.append(input(isPPMsg))
+  commitMsgSplit.append(input(isPPMsg))
 
   noPPMsg = re.match("[^yn].*", commitMsgSplit[2].lower().lstrip())
 
@@ -108,11 +105,11 @@ with open(commitFile) as f:
       observer = input(observerMsg)
 
 with open(commitFile, "w+") as f:
-  f.write(msgType + ":")
-  f.write(msgBody + ";")
-  f.write(str(bool(isPP)) + ";")
+  f.write(msgType.upper() + ":")
+  f.write(msgSubject + "\n")
+  f.write(commitBodyMsg)
 
   if isPP:
-    f.write(driver + ";")
-    f.write(observer + ";")
+    f.write("DRIVER: " + driver + "\n")
+    f.write("OBSERVER: " + observer + "\n")
 

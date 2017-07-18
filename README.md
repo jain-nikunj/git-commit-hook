@@ -1,5 +1,6 @@
 # git-commit-hook
-A commit-hook which will error check a standard Git commit message.
+A commit-hook which will error check a standard Git commit message.  
+Built by Nikunj Jain under the guidance of Hezheng Yin.
 
 # Usage
 Copy the executable file `commit-msg` into `/path/to/your/repo/.git/hooks/`  

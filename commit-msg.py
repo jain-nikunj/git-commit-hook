@@ -32,22 +32,27 @@ branchName = branchName[2:len(branchName) - 2]
 commitFile = sys.argv[1]
 sys.stdin = open("/dev/tty", "r")
 
-allowedType = ['feat', 'fix', 'docs', 'style', 'test', 'chore']
+allowedType = ['feat', 'maint', 'fix', 'impr']
 dictHelpMsg = {'feat': "A new feature",
                'fix': "A bug fix",
-               'docs': 'Documentation only changes',
-               'style': 'Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)',
-               'test': "Adding missing or correcting existing tests",
-               'chore': "Changes to the build process or auxiliary tools and libraries such as documentation generation"
+               'maint': ( 'Any maintenance like: \n' +
+                                '(docs) Documentation changes\n' +
+                                "(tests) Adding missing or correcting existing tests\n" + 
+                                "(chore) Changes to the build process or auxiliary tools and libraries such as documentation generation\n"),
+               'impr': ( 'Improvements like: \n' +
+                                '(style) Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)\n' +
+                                '(performance) Changes that affect the performance of the code\n' +
+                                '(refactoring) Refactoring of code'
+                              )
               }
 
 if not branchName == 'master':
   allowedType.append("quick")
   dictHelpMsg['quick'] = "A quick commit made for temporary changes"
 
-nameErrorMsg = "Github usernames may not contain spaces.\n"
+nameErrorMsg = "Github usernames may not contain spaces and need '@'.\n"
 typeErrorMsg = ("Incorrect format for commit type.\n" +
-  "You can avoid such messages in the future by following this format in your messages: 'COMMIT_TYPE: COMMIT_SUBJECT" +
+  "You can avoid such messages in the future by following this format in your messages: 'COMMIT_TYPE: COMMIT_SUBJECT'\n" +
   "Choose from the following:\n" +
   str(allowedType) + "\nPlease enter a new commit type, or enter 'help' for details on what each type means: ")
 subjectErrorMsg = "Incorrect format for commit subject.\nPlease enter message subject:"
@@ -74,7 +79,8 @@ with open(commitFile) as f:
 
   while not typeMatch:
     if re.match(".*help.*", msgType.lower().lstrip()):
-      [print(key + ": " + value + "\n") for key, value in dictHelpMsg.items()]
+      print('\n')
+      [print(key + ": " + dictHelpMsg[key] + "\n") for key in allowedType]
 
     msgType = input(typeErrorMsg)
     typeMatch = any([re.match(".*" + word.lower() + ".*", msgType.lower().lstrip()) for word in allowedType])
@@ -95,17 +101,17 @@ with open(commitFile) as f:
 
   if isPP:
     driver = input(driverMsg)
-    while re.match(".* .*", driver):
+    while re.match(".* .*", driver) or not re.match("[^@]+@[^@]+\.[^@]+", driver):
       print(nameErrorMsg)
       driver = input(driverMsg)
 
     observer = input(observerMsg)
-    while re.match(".* .*", observer):
+    while re.match(".* .*", observer) or not re.match("[^@]+@[^@]+\.[^@]+", observer):
       print(nameErrorMsg)
       observer = input(observerMsg)
 
 with open(commitFile, "w+") as f:
-  f.write(msgType.upper() + ":")
+  f.write(msgType + ": ")
   f.write(msgSubject + "\n")
   f.write(commitBodyMsg)
 

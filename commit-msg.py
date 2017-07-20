@@ -80,7 +80,8 @@ with open(commitFile) as f:
   while not typeMatch:
     if re.match(".*help.*", msgType.lower().lstrip()):
       print('\n')
-      [print(key + ": " + dictHelpMsg[key] + "\n") for key in allowedType]
+      for key in allowedType:
+        print(key + ": " + dictHelpMsg[key] + "\n")
 
     msgType = input(typeErrorMsg)
     typeMatch = any([re.match(".*" + word.lower() + ".*", msgType.lower().lstrip()) for word in allowedType])

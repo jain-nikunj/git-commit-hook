@@ -79,8 +79,9 @@ with open(commitFile) as f:
 
   while not typeMatch:
     if re.match(".*help.*", msgType.lower().lstrip()):
-      print('\n')
-      [print(key + ": " + dictHelpMsg[key] + "\n") for key in allowedType]
+      print '\n'
+      for key in allowedType:
+        print key + ": " + dictHelpMsg[key] + "\n"
 
     msgType = raw_input(typeErrorMsg)
     typeMatch = any([re.match(".*" + word.lower() + ".*", msgType.lower().lstrip()) for word in allowedType])
@@ -102,12 +103,12 @@ with open(commitFile) as f:
   if isPP:
     driver = raw_input(driverMsg)
     while re.match(".* .*", driver) or not re.match("[^@]+@[^@]+\.[^@]+", driver):
-      print(nameErrorMsg)
+      print nameErrorMsg
       driver = raw_input(driverMsg)
 
     observer = raw_input(observerMsg)
     while re.match(".* .*", observer) or not re.match("[^@]+@[^@]+\.[^@]+", observer):
-      print(nameErrorMsg)
+      print nameErrorMsg
       observer = raw_input(observerMsg)
 
 with open(commitFile, "w+") as f:

@@ -2,8 +2,8 @@
 A commit-hook which will error check a standard Git commit message.  
 Built by Nikunj Jain under the guidance of Hezheng Yin.
 
-# Usage
-Copy the executable file `commit-msg` into `/path/to/your/repo/.git/hooks/`  
+# For Users
+Depending on your python version, copy the executable file `pythonX/commit-msg` into `/path/to/your/repo/.git/hooks/`  
 The format for commit messages is as follows:  
 ```
 COMMIT_TYPE: COMMIT_SUBJECT  
@@ -32,6 +32,6 @@ commit body if you answer yes.
     <dd> A quick and dirty commit, to be updated later (for things like daily stash of changes) </dd>
 </dl>
 
-# For Developers
+# For Developers Looking to Add to the Project
 The file `commit-msg.py` contains the scripting necessary for basic regex checking.
 To generate the executable, execute: `pyinstaller commit-msg.py --onefile`
